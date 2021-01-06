@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from './components/Dashboard';
 import Header from './components/Layout/Header';
 import AddProject from "./components/Project/AddProject";
+import UpdateProject from "./components/Project/UpdateProject";
 
 import { Provider } from "react-redux";
 import store from "./store";
@@ -18,6 +19,7 @@ function App() {
                     <Header />
                     <Route exact path="/dashboard" component={Dashboard} />
                     <Route exact path="/addProject" component={AddProject} />
+                    <Route exact path="/updateProject/:id" component={UpdateProject} />
 
                     {/* <Redirect to="/dashboard" /> */}
                 </div>
