@@ -1,5 +1,7 @@
 package io.agileintelligence.ppmtool.web;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,28 +33,28 @@ public class ProjectController {
 	private MapValidationErrorService mapValidationErrorService;
 	
 	@PostMapping("")
-	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result) {
+	public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result, Principal principal) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
 		if (errorMap!=null) return errorMap;
 		
-		Project project1 = projectService.saveOrUpdateProject(project);
+		Project project1 = projectService.saveOrUpdateProject(project, principal.getName());
 		return new ResponseEntity<Project>(project1, HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{projectId}")
-	public ResponseEntity<?> getProjectById(@PathVariable String projectId) {
-		Project project = projectService.findProjectByIdentifier(projectId);
+	public ResponseEntity<?> getProjectById(@PathVariable String projectId, Principal principal) {
+		Project project = projectService.findProjectByIdentifier(projectId, principal.getName());
 		return new ResponseEntity<Project>(project, HttpStatus.OK);
 	}
 	
 	@GetMapping("/all")
-	public Iterable<Project> getAllProjects() {
-		return projectService.findAllprojects();
+	public Iterable<Project> getAllProjects(Principal principal) {
+		return projectService.findAllprojects(principal.getName());
 	}
 	
 	@DeleteMapping("/{projectId}")
-	public ResponseEntity<?> deleteProjectById(@PathVariable String projectId) {
-		projectService.deleteProjectByIdentifier(projectId);
+	public ResponseEntity<?> deleteProjectById(@PathVariable String projectId, Principal principal) {
+		projectService.deleteProjectByIdentifier(projectId, principal.getName());
 		
 		return new ResponseEntity<String>("Project Deleted Id: "+projectId, HttpStatus.OK);
 	}
